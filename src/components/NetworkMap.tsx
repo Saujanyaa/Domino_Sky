@@ -167,11 +167,18 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
           {/* Station Tier Filter */}
           <div className="flex items-center gap-2">
-            <Radio className="w-4 h-4 text-slate-400" />
+            <Radio className="w-4 h-4 text-slate-300" aria-hidden="true" />
+            <label htmlFor="tier-filter-select" className="text-xs font-mono text-slate-300">
+              Tier:
+            </label>
             <select
+              id="tier-filter-select"
+              aria-label="Filter stations by tier"
               value={tierFilter}
-              onChange={(e: any) => setTierFilter(e.target.value)}
-              className="px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500"
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setTierFilter(e.target.value as 'all' | 'mega_hub' | 'regional_hub' | 'spoke')
+              }
+              className="px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
             >
               <option value="all">All Station Tiers (16)</option>
               <option value="mega_hub">Mega Hubs Only (4)</option>
@@ -183,12 +190,16 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
         {/* Filter by Tail */}
         <div className="flex items-center gap-2">
-          <Plane className="w-4 h-4 text-cyan-400" />
-          <label className="text-xs font-mono text-slate-300">Aircraft Tail:</label>
+          <Plane className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+          <label htmlFor="map-tail-filter" className="text-xs font-mono text-slate-300">
+            Aircraft Tail:
+          </label>
           <select
+            id="map-tail-filter"
+            aria-label="Filter route display by aircraft tail"
             value={selectedTail}
-            onChange={(e) => setSelectedTail(e.target.value)}
-            className="px-3 py-1 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-cyan-300 font-bold focus:outline-none focus:border-cyan-500"
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedTail(e.target.value)}
+            className="px-3 py-1 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-cyan-300 font-bold focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
           >
             <option value="all">All Fleet (16 Rotations)</option>
             {tailIds.map((t) => (
@@ -209,6 +220,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
           {/* SVG Map Canvas */}
           <svg
+            role="region"
+            aria-label="Interactive Indian Flight Network Map"
             viewBox="0 0 800 850"
             className="w-full h-auto max-h-[780px] relative z-10 select-none"
           >
@@ -319,9 +332,19 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                 return (
                   <g
                     key={airport.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Inspect ${airport.id} Airport in ${airport.city}. Tier: ${airport.tier}. Status: ${isClosed ? 'Closed' : hasDelays ? 'Delayed' : 'Nominal'}`}
+                    aria-pressed={isSelected}
                     style={{ pointerEvents: 'all' }}
-                    className="cursor-pointer group select-none"
+                    className="cursor-pointer group select-none focus:outline-none"
                     onClick={() => setSelectedAirportId(airport.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedAirportId(airport.id);
+                      }
+                    }}
                     onMouseEnter={() => setHoveredAirport(airport)}
                     onMouseLeave={() => setHoveredAirport(null)}
                   >

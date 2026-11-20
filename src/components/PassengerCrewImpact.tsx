@@ -197,8 +197,9 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
 
         {/* Filter Toggle */}
         {activeTab === 'connections' ? (
-          <label className="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
+          <label htmlFor="filter-missed-conn-checkbox" className="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
             <input
+              id="filter-missed-conn-checkbox"
               type="checkbox"
               checked={filterMissedOnly}
               onChange={(e) => setFilterMissedOnly(e.target.checked)}
@@ -207,8 +208,9 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
             <span>Show Missed Only ({summary.missed_connections_count})</span>
           </label>
         ) : (
-          <label className="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
+          <label htmlFor="filter-crew-violations-checkbox" className="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
             <input
+              id="filter-crew-violations-checkbox"
               type="checkbox"
               checked={filterViolationOnly}
               onChange={(e) => setFilterViolationOnly(e.target.checked)}
@@ -224,16 +226,19 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
         <div className="rounded-xl border border-[#1e2f47] bg-[#0d1522] overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono border-collapse">
+              <caption className="sr-only">
+                Passenger Transfer Connections Bank and Delay Impact Analysis
+              </caption>
               <thead>
-                <tr className="bg-slate-900/90 text-slate-400 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider select-none">
-                  <th className="py-3 px-3.5">Connection ID</th>
-                  <th className="py-3 px-3">Hub Airport</th>
-                  <th className="py-3 px-3">Inbound Flight</th>
-                  <th className="py-3 px-3">Connecting Flight</th>
-                  <th className="py-3 px-3">Transfer Pax</th>
-                  <th className="py-3 px-3">Connect Time (Avail vs Req)</th>
-                  <th className="py-3 px-3">Status</th>
-                  <th className="py-3 px-3.5">Causal Operational Analysis</th>
+                <tr className="bg-slate-900/90 text-slate-300 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider select-none">
+                  <th scope="col" className="py-3 px-3.5">Connection ID</th>
+                  <th scope="col" className="py-3 px-3">Hub Airport</th>
+                  <th scope="col" className="py-3 px-3">Inbound Flight</th>
+                  <th scope="col" className="py-3 px-3">Connecting Flight</th>
+                  <th scope="col" className="py-3 px-3">Transfer Pax</th>
+                  <th scope="col" className="py-3 px-3">Connect Time (Avail vs Req)</th>
+                  <th scope="col" className="py-3 px-3">Status</th>
+                  <th scope="col" className="py-3 px-3.5">Causal Operational Analysis</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">
@@ -334,16 +339,19 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
         <div className="rounded-xl border border-[#1e2f47] bg-[#0d1522] overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono border-collapse">
+              <caption className="sr-only">
+                Flight Crew Roster and Maximum Flight Duty Period Compliance Log
+              </caption>
               <thead>
-                <tr className="bg-slate-900/90 text-slate-400 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider select-none">
-                  <th className="py-3 px-3.5">Crew ID</th>
-                  <th className="py-3 px-3">Tail ID</th>
-                  <th className="py-3 px-3">Crew Base</th>
-                  <th className="py-3 px-3">Duty Start</th>
-                  <th className="py-3 px-3">Assigned Rotations</th>
-                  <th className="py-3 px-3">Duty Duration vs Max (600m)</th>
-                  <th className="py-3 px-3">Compliance</th>
-                  <th className="py-3 px-3.5">Violation Margin</th>
+                <tr className="bg-slate-900/90 text-slate-300 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider select-none">
+                  <th scope="col" className="py-3 px-3.5">Crew ID</th>
+                  <th scope="col" className="py-3 px-3">Tail ID</th>
+                  <th scope="col" className="py-3 px-3">Crew Base</th>
+                  <th scope="col" className="py-3 px-3">Duty Start</th>
+                  <th scope="col" className="py-3 px-3">Assigned Rotations</th>
+                  <th scope="col" className="py-3 px-3">Duty Duration vs Max (600m)</th>
+                  <th scope="col" className="py-3 px-3">Compliance</th>
+                  <th scope="col" className="py-3 px-3.5">Violation Margin</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">

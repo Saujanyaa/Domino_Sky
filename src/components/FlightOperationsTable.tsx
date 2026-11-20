@@ -96,13 +96,16 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
         return true;
       })
       .sort((a, b) => {
-        let valA: any = a[sortField];
-        let valB: any = b[sortField];
+        const valA = a[sortField];
+        const valB = b[sortField];
 
-        if (typeof valA === 'string') {
+        if (typeof valA === 'string' && typeof valB === 'string') {
           return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
-        return sortAsc ? valA - valB : valB - valA;
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return sortAsc ? valA - valB : valB - valA;
+        }
+        return 0;
       });
   }, [flights, searchTerm, statusFilter, tailFilter, sortField, sortAsc]);
 
@@ -112,20 +115,28 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
       <div className="p-3.5 rounded-xl bg-[#0d1522] border border-[#1e2f47] flex flex-wrap items-center justify-between gap-3">
         {/* Search */}
         <div className="relative flex-1 min-w-[240px]">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" aria-hidden="true" />
+          <label htmlFor="flight-table-search" className="sr-only">
+            Search flight schedule by flight ID, aircraft tail, origin, or destination
+          </label>
           <input
+            id="flight-table-search"
             type="text"
             placeholder="Search Flight ID, Tail, Origin, Destination..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+            className="w-full pl-9 pr-3 py-1.5 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500"
           />
         </div>
 
         {/* Status Filter */}
         <div className="flex items-center gap-2">
-          <label className="text-xs font-mono text-slate-400">Status:</label>
+          <label htmlFor="flight-status-filter" className="text-xs font-mono text-slate-300">
+            Status:
+          </label>
           <select
+            id="flight-status-filter"
+            aria-label="Filter flights by operational status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-2.5 py-1.5 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500"
@@ -140,8 +151,12 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
 
         {/* Tail Filter */}
         <div className="flex items-center gap-2">
-          <label className="text-xs font-mono text-slate-400">Tail:</label>
+          <label htmlFor="flight-tail-filter" className="text-xs font-mono text-slate-300">
+            Tail:
+          </label>
           <select
+            id="flight-tail-filter"
+            aria-label="Filter flights by aircraft registration tail"
             value={tailFilter}
             onChange={(e) => setTailFilter(e.target.value)}
             className="px-2.5 py-1.5 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500"
@@ -155,7 +170,7 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
           </select>
         </div>
 
-        <div className="text-xs font-mono text-slate-400">
+        <div className="text-xs font-mono text-slate-300">
           Showing <span className="text-cyan-400 font-bold">{processedFlights.length}</span> of{' '}
           {flights.length} flights
         </div>
@@ -165,9 +180,14 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
       <div className="rounded-xl border border-[#1e2f47] bg-[#0d1522] overflow-hidden shadow-lg">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono border-collapse">
+            <caption className="sr-only">
+              Comprehensive Schedule and Delay Cascade Operations Table for All 70 Flights
+            </caption>
             <thead>
-              <tr className="bg-slate-900/90 text-slate-400 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider select-none">
+              <tr className="bg-slate-900/90 text-slate-300 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider select-none">
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'flight_id' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('flight_id')}
                   className="py-3 px-3.5 cursor-pointer hover:text-white"
                 >
@@ -176,6 +196,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'operated_tail_id' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('operated_tail_id')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -184,6 +206,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'origin' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('origin')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -192,6 +216,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'destination' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('destination')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -200,6 +226,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'sched_dep_min' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('sched_dep_min')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -208,6 +236,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'revised_dep_min' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('revised_dep_min')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -216,6 +246,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'sched_arr_min' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('sched_arr_min')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -224,6 +256,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'revised_arr_min' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('revised_arr_min')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -232,6 +266,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'arr_delay_min' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('arr_delay_min')}
                   className="py-3 px-3 cursor-pointer hover:text-white"
                 >
@@ -240,6 +276,8 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   </div>
                 </th>
                 <th
+                  scope="col"
+                  aria-sort={sortField === 'status' ? (sortAsc ? 'ascending' : 'descending') : 'none'}
                   onClick={() => handleSort('status')}
                   className="py-3 px-3.5 cursor-pointer hover:text-white"
                 >
@@ -247,7 +285,7 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                     Status <ArrowUpDown className="w-3 h-3" />
                   </div>
                 </th>
-                <th className="py-3 px-3 text-right">Details</th>
+                <th scope="col" className="py-3 px-3 text-right">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
@@ -342,20 +380,26 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
 
       {/* Flight Detail Drawer / Modal */}
       {selectedFlight && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="flight-detail-title"
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+        >
           <div className="w-full max-w-lg rounded-2xl bg-[#0d1522] border border-[#1e2f47] p-6 space-y-4 shadow-2xl relative">
             <button
               onClick={() => setSelectedFlight(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition"
+              aria-label="Close flight details modal"
+              className="absolute top-4 right-4 p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-cyan-400"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
 
             <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
-              <Plane className="w-5 h-5 text-cyan-400" />
+              <Plane className="w-5 h-5 text-cyan-400" aria-hidden="true" />
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold font-mono text-white">
+                  <h3 id="flight-detail-title" className="text-base font-bold font-mono text-white">
                     Flight {selectedFlight.flight_id}
                   </h3>
                   <span className="text-xs font-mono text-slate-400">

@@ -15,13 +15,19 @@ import {
   Search,
 } from 'lucide-react';
 import type { CascadeStep, SimulationResult, FlightNetworkData } from '../types/index.ts';
+import type { ActiveTab } from './Navbar.tsx';
 
 interface CascadeTraceProps {
   currentResult: SimulationResult;
   dataset: FlightNetworkData;
-  onNavigateTab: (tab: any) => void;
+  onNavigateTab: (tab: ActiveTab) => void;
 }
 
+/**
+ * Domino Cascade Trace (Page E):
+ * Visualizes the exact chronological root-cause chain of the disruption cascade,
+ * tracing airport closures to gate-holds, turnaround breaches, missed connections, and crew duty limits.
+ */
 export const CascadeTrace: React.FC<CascadeTraceProps> = ({
   currentResult,
   dataset,
@@ -101,8 +107,12 @@ export const CascadeTrace: React.FC<CascadeTraceProps> = ({
         <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
           {/* Search in trace */}
           <div className="relative min-w-[180px]">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" aria-hidden="true" />
+            <label htmlFor="cascade-search-input" className="sr-only">
+              Search cascade events
+            </label>
             <input
+              id="cascade-search-input"
               type="text"
               placeholder="Search flight, tail..."
               value={searchFilter}
@@ -112,9 +122,13 @@ export const CascadeTrace: React.FC<CascadeTraceProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5">
-            <Plane className="w-4 h-4 text-cyan-400" />
-            <label className="text-slate-300">Tail:</label>
+            <Plane className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+            <label htmlFor="cascade-tail-select" className="text-slate-300">
+              Tail:
+            </label>
             <select
+              id="cascade-tail-select"
+              aria-label="Filter cascade events by aircraft tail"
               value={selectedTail}
               onChange={(e) => setSelectedTail(e.target.value)}
               className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500"
@@ -129,9 +143,13 @@ export const CascadeTrace: React.FC<CascadeTraceProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5">
-            <Filter className="w-4 h-4 text-slate-400" />
-            <label className="text-slate-300">Class:</label>
+            <Filter className="w-4 h-4 text-slate-400" aria-hidden="true" />
+            <label htmlFor="cascade-type-select" className="text-slate-300">
+              Class:
+            </label>
             <select
+              id="cascade-type-select"
+              aria-label="Filter cascade events by operational class"
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
               className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500"

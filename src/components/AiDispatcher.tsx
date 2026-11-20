@@ -94,8 +94,9 @@ export const AiDispatcher: React.FC<AiDispatcherProps> = ({
     try {
       const response = await queryGeminiDispatcher(apiKey, promptContext);
       setGeminiAnalysis(response);
-    } catch (err: any) {
-      setApiError(err.message || 'Failed to query Gemini API.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      setApiError(message || 'Failed to query Gemini API.');
     } finally {
       setIsLoading(false);
     }

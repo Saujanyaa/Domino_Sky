@@ -183,14 +183,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Navigation Tabs */}
-      <div className="max-w-[1700px] mx-auto px-4 flex space-x-1 overflow-x-auto scrollbar-none border-t border-[#141f30]">
+      <nav
+        role="tablist"
+        aria-label="Operations Center Views"
+        className="max-w-[1700px] mx-auto px-4 flex space-x-1 overflow-x-auto scrollbar-none border-t border-[#141f30]"
+      >
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
             <button
               key={item.id}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={`tabpanel-${item.id}`}
+              id={`tab-${item.id}`}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium transition-all border-b-2 whitespace-nowrap ${
+              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium transition-all border-b-2 whitespace-nowrap focus:outline-none focus:ring-1 focus:ring-cyan-400 ${
                 isActive
                   ? 'border-cyan-400 text-cyan-300 bg-cyan-950/25 font-semibold'
                   : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
@@ -202,8 +210,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span
                   className={`px-1.5 py-0.2 text-[10px] font-mono rounded-full ${
                     item.badge === 'ALERT'
-                      ? 'bg-red-900/80 text-red-200 border border-red-700'
-                      : 'bg-cyan-900/60 text-cyan-200 border border-cyan-800'
+                      ? 'bg-red-950 text-red-200 border border-red-700'
+                      : 'bg-cyan-950 text-cyan-200 border border-cyan-800'
                   }`}
                 >
                   {item.badge}
@@ -212,7 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           );
         })}
-      </div>
+      </nav>
     </header>
   );
 };

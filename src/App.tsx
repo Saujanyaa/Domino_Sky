@@ -18,6 +18,7 @@ import { PassengerCrewImpact } from './components/PassengerCrewImpact.tsx';
 import { RecoveryCentre } from './components/RecoveryCentre.tsx';
 import { BeforeAfterComparison } from './components/BeforeAfterComparison.tsx';
 import { AiDispatcher } from './components/AiDispatcher.tsx';
+import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 
 // Sole source of network data as required by specification
 const dataset = rawData as unknown as FlightNetworkData;
@@ -115,19 +116,34 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b12] text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
-      {/* Top Operations Navbar */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        currentResult={currentResult}
-        onReset={handleReset}
-        onQuickPresetBOM={handleSelectPresetBOM}
-        onQuickPresetDEL={handleSelectPresetDEL}
-      />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-[#070b12] text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-black">
+        {/* Skip to Main Content Link for Keyboard Accessibility (WCAG 2.1 AA) */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-cyan-400 focus:text-black focus:font-mono focus:font-bold focus:rounded-md focus:shadow-2xl focus:outline-none"
+        >
+          Skip to main operations dashboard
+        </a>
 
-      {/* Main Dynamic Workspace Area */}
-      <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 py-5">
+        {/* Top Operations Navbar */}
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          currentResult={currentResult}
+          onReset={handleReset}
+          onQuickPresetBOM={handleSelectPresetBOM}
+          onQuickPresetDEL={handleSelectPresetDEL}
+        />
+
+        {/* Main Dynamic Workspace Area */}
+        <main
+          id="main-content"
+          tabIndex={-1}
+          role="main"
+          aria-label="Operations Center Content View"
+          className="flex-1 max-w-[1700px] w-full mx-auto px-4 py-5 focus:outline-none"
+        >
         {activeTab === 'overview' && (
           <OperationsOverview
             currentResult={currentResult}
@@ -228,6 +244,7 @@ export function App() {
         </div>
       </footer>
     </div>
+  </ErrorBoundary>
   );
 }
 

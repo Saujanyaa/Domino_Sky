@@ -169,13 +169,15 @@ export const DisruptionSimulator: React.FC<DisruptionSimulatorProps> = ({
           <form onSubmit={handleRun} className="space-y-4">
             {/* Airport Picker */}
             <div>
-              <label className="block text-xs font-mono text-slate-300 mb-1">
+              <label htmlFor="simulator-airport-select" className="block text-xs font-mono text-slate-300 mb-1">
                 Affected Airport Station:
               </label>
               <select
+                id="simulator-airport-select"
+                aria-label="Select airport station to close"
                 value={selectedAirport}
                 onChange={(e) => setSelectedAirport(e.target.value)}
-                className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
               >
                 {dataset.airports.map((apt) => (
                   <option key={apt.id} value={apt.id}>
@@ -188,37 +190,43 @@ export const DisruptionSimulator: React.FC<DisruptionSimulatorProps> = ({
             {/* Time Interval Pickers */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-slate-300 mb-1">
+                <label htmlFor="simulator-start-time" className="block text-xs font-mono text-slate-300 mb-1">
                   Closure Start (IST):
                 </label>
                 <input
+                  id="simulator-start-time"
                   type="text"
                   placeholder="09:00"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                 />
-                <span className="text-[10px] text-slate-500 font-mono">HH:MM format</span>
+                <span className="text-[10px] text-slate-400 font-mono">HH:MM format</span>
               </div>
               <div>
-                <label className="block text-xs font-mono text-slate-300 mb-1">
+                <label htmlFor="simulator-end-time" className="block text-xs font-mono text-slate-300 mb-1">
                   Closure End (IST):
                 </label>
                 <input
+                  id="simulator-end-time"
                   type="text"
                   placeholder="10:30"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 text-xs font-mono rounded-lg bg-slate-900 border border-slate-700 text-slate-100 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                 />
-                <span className="text-[10px] text-slate-500 font-mono">HH:MM format</span>
+                <span className="text-[10px] text-slate-400 font-mono">HH:MM format</span>
               </div>
             </div>
 
             {/* Validation Message */}
             {validationError && (
-              <div className="p-2.5 rounded-lg bg-red-950/40 border border-red-700 text-red-300 text-xs font-mono flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="p-2.5 rounded-lg bg-red-950/40 border border-red-700 text-red-300 text-xs font-mono flex items-center gap-2"
+              >
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" aria-hidden="true" />
                 <span>{validationError}</span>
               </div>
             )}
