@@ -1,5 +1,4 @@
 import type { SimulationResult, FlightNetworkData, ScoredRecoveryOption } from '../types/index.ts';
-import { formatDelay, formatDuration } from './timeUtils.ts';
 
 /**
  * Generates an executive airline operations briefing from calculated deterministic simulation figures.
@@ -7,8 +6,8 @@ import { formatDelay, formatDuration } from './timeUtils.ts';
  */
 export function generateDeterministicBriefing(
   currentResult: SimulationResult,
-  baselineResult: SimulationResult,
-  dataset: FlightNetworkData,
+  _baselineResult: SimulationResult,
+  _dataset: FlightNetworkData,
   topRecovery?: ScoredRecoveryOption
 ): {
   headline: string;

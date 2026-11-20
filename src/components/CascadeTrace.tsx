@@ -6,15 +6,12 @@ import {
   Plane,
   Users,
   AlertTriangle,
-  ArrowDown,
   Filter,
   CheckCircle2,
   Sparkles,
-  ChevronRight,
-  Layers,
   Search,
 } from 'lucide-react';
-import type { CascadeStep, SimulationResult, FlightNetworkData } from '../types/index.ts';
+import type { SimulationResult, FlightNetworkData } from '../types/index.ts';
 import type { ActiveTab } from './Navbar.tsx';
 
 interface CascadeTraceProps {
@@ -30,14 +27,14 @@ interface CascadeTraceProps {
  */
 export const CascadeTrace: React.FC<CascadeTraceProps> = ({
   currentResult,
-  dataset,
+  dataset: _dataset,
   onNavigateTab,
 }) => {
   const [selectedTail, setSelectedTail] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [searchFilter, setSearchFilter] = useState<string>('');
 
-  const { cascade_trace, scenario_type, closure, summary } = currentResult;
+  const { cascade_trace, scenario_type } = currentResult;
 
   // Extract unique tails from trace with step counts
   const tailStats = useMemo(() => {
@@ -281,7 +278,7 @@ export const CascadeTrace: React.FC<CascadeTraceProps> = ({
                       )}
                       {step.time_str && (
                         <span className="text-slate-400 flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-slate-500" />
+                          <Clock className="w-3 h-3 text-slate-400" aria-hidden="true" />
                           {step.time_str}
                         </span>
                       )}

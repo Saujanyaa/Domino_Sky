@@ -1,14 +1,10 @@
 import React from 'react';
 import {
   BarChart3,
-  CheckCircle2,
   AlertTriangle,
   Clock,
   Users,
   ShieldAlert,
-  Plane,
-  TrendingDown,
-  TrendingUp,
 } from 'lucide-react';
 import type { SimulationResult } from '../types/index.ts';
 
@@ -203,7 +199,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
               </div>
             </div>
           ) : (
-            <div className="mt-4 text-center text-xs text-slate-500 py-3">
+            <div className="mt-4 text-center text-xs text-slate-400 py-3">
               Apply a candidate from the Recovery Centre to view recovered scenario metrics.
             </div>
           )}
@@ -214,13 +210,16 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
       <div className="rounded-xl border border-[#1e2f47] bg-[#0d1522] overflow-hidden shadow-lg">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono border-collapse">
+            <caption className="sr-only">
+              Comparative Operational Performance Matrix across Baseline, Disrupted, and Recovered Scenarios
+            </caption>
             <thead>
-              <tr className="bg-slate-900/90 text-slate-400 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider">
-                <th className="py-3 px-4">Operational Performance Metric</th>
-                <th className="py-3 px-4">Baseline (Nominal)</th>
-                <th className="py-3 px-4">Disrupted State</th>
-                <th className="py-3 px-4">Recovered State</th>
-                <th className="py-3 px-4 text-right">Recovery Improvement Delta</th>
+              <tr className="bg-slate-900/90 text-slate-300 border-b border-[#1e2f47] uppercase text-[10px] tracking-wider">
+                <th scope="col" className="py-3 px-4">Operational Performance Metric</th>
+                <th scope="col" className="py-3 px-4">Baseline (Nominal)</th>
+                <th scope="col" className="py-3 px-4">Disrupted State</th>
+                <th scope="col" className="py-3 px-4">Recovered State</th>
+                <th scope="col" className="py-3 px-4 text-right">Recovery Improvement Delta</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
@@ -252,7 +251,7 @@ export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({
                           {row.formatDelta(delta)}
                         </span>
                       ) : (
-                        <span className="text-slate-500">—</span>
+                        <span className="text-slate-400">—</span>
                       )}
                     </td>
                   </tr>

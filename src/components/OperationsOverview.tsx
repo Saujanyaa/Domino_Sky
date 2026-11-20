@@ -29,7 +29,7 @@ interface OperationsOverviewProps {
  */
 export const OperationsOverview: React.FC<OperationsOverviewProps> = ({
   currentResult,
-  baselineResult,
+  baselineResult: _baselineResult,
   dataset,
   onNavigateTab,
   onSelectPresetBOM,
@@ -91,6 +91,7 @@ export const OperationsOverview: React.FC<OperationsOverviewProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={onSelectPresetBOM}
               aria-label="Simulate BOM 90-minute Disruption Scenario"
               className="px-3.5 py-1.5 text-xs font-mono font-semibold rounded-lg bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white shadow-[0_0_15px_rgba(239,68,68,0.3)] transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-400"
@@ -99,6 +100,7 @@ export const OperationsOverview: React.FC<OperationsOverviewProps> = ({
               Simulate BOM Disruption (09:00 - 10:30)
             </button>
             <button
+              type="button"
               onClick={() => onNavigateTab('simulator')}
               aria-label="Open Custom Disruption Simulator tab"
               className="px-3.5 py-1.5 text-xs font-mono font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-800/50 transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-400"
@@ -136,6 +138,7 @@ export const OperationsOverview: React.FC<OperationsOverviewProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => onNavigateTab('cascade')}
               aria-label="View chronological domino cascade trace"
               className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-cyan-950/80 hover:bg-cyan-900 text-cyan-300 border border-cyan-700 transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-400"
@@ -144,6 +147,7 @@ export const OperationsOverview: React.FC<OperationsOverviewProps> = ({
               View Domino Trace
             </button>
             <button
+              type="button"
               onClick={() => onNavigateTab('recovery')}
               aria-label="Launch recovery centre to analyze solutions"
               className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.3)] focus:outline-none focus:ring-2 focus:ring-emerald-400"
@@ -440,6 +444,7 @@ export const OperationsOverview: React.FC<OperationsOverviewProps> = ({
           <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
             <span className="text-slate-300">Need immediate resolution?</span>
             <button
+              type="button"
               onClick={() => onNavigateTab('recovery')}
               aria-label="Navigate to Recovery Centre to explore solutions"
               className="text-cyan-400 hover:text-cyan-300 font-mono font-semibold flex items-center gap-1 transition focus:outline-none focus:underline"

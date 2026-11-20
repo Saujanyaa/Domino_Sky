@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import rawData from './data/flight_network.json';
 import type {
   FlightNetworkData,
@@ -111,7 +111,7 @@ export function App() {
     });
   };
 
-  const handleSelectAirportForClosure = (airportId: string) => {
+  const handleSelectAirportForClosure = (_airportId: string) => {
     setActiveTab('simulator');
   };
 
@@ -224,7 +224,7 @@ export function App() {
       </main>
 
       {/* Operations Footer */}
-      <footer className="border-t border-[#141f30] bg-[#070b12] py-3 px-4 text-xs font-mono text-slate-500">
+      <footer className="border-t border-[#141f30] bg-[#070b12] py-3 px-4 text-xs font-mono text-slate-400">
         <div className="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <span className="text-slate-400 font-bold">

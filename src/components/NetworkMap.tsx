@@ -1,23 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Compass,
   Plane,
-  AlertTriangle,
-  Building2,
-  Clock,
   Layers,
-  X,
-  Filter,
-  CheckCircle2,
-  ChevronRight,
   ShieldAlert,
   Radio,
-  Zap,
 } from 'lucide-react';
 import type {
   Airport,
   FlightNetworkData,
-  SimulatedFlight,
   SimulationResult,
   ClosureParams,
 } from '../types/index.ts';
@@ -217,6 +207,17 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
         <div className="xl:col-span-2 relative p-4 rounded-xl bg-gradient-to-b from-[#060a12] via-[#090f1a] to-[#060a12] border border-[#1e2f47] overflow-hidden min-h-[660px] flex items-center justify-center shadow-xl">
           {/* Radar background grid */}
           <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#00e5ff_1px,transparent_1px)] [background-size:28px_28px]" />
+
+          {/* Interactive station hover badge */}
+          {hoveredAirport && (
+            <div className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-cyan-500/50 text-xs font-mono shadow-lg backdrop-blur-sm pointer-events-none">
+              <span className="text-cyan-400 font-bold">{hoveredAirport.id}</span>
+              <span className="text-slate-300"> — {hoveredAirport.city} ({hoveredAirport.name})</span>
+              <span className="ml-2 px-1.5 py-0.5 text-[9px] bg-slate-800 text-slate-300 rounded uppercase">
+                {hoveredAirport.tier.replace('_', ' ')}
+              </span>
+            </div>
+          )}
 
           {/* SVG Map Canvas */}
           <svg
@@ -584,7 +585,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
             <div className="space-y-3">
               <div className="text-xs font-bold font-mono text-slate-300 uppercase tracking-wider flex items-center justify-between">
                 <span>Inbound Flights ({airportInboundFlights.length})</span>
-                <span className="text-[10px] text-slate-500">Scheduled vs Revised</span>
+                <span className="text-[10px] text-slate-400">Scheduled vs Revised</span>
               </div>
               <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
                 {airportInboundFlights.map((f) => (
@@ -600,7 +601,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   >
                     <div className="flex items-center gap-1.5">
                       <span className="font-bold text-white">{f.flight_id}</span>
-                      <span className="text-slate-500">({f.origin}→{f.destination})</span>
+                      <span className="text-slate-400">({f.origin}→{f.destination})</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span>Arr: {f.revised_arr}</span>
@@ -617,7 +618,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
               <div className="text-xs font-bold font-mono text-slate-300 uppercase tracking-wider pt-2 flex items-center justify-between">
                 <span>Outbound Flights ({airportOutboundFlights.length})</span>
-                <span className="text-[10px] text-slate-500">Scheduled vs Revised</span>
+                <span className="text-[10px] text-slate-400">Scheduled vs Revised</span>
               </div>
               <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
                 {airportOutboundFlights.map((f) => (
@@ -633,7 +634,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   >
                     <div className="flex items-center gap-1.5">
                       <span className="font-bold text-white">{f.flight_id}</span>
-                      <span className="text-slate-500">({f.origin}→{f.destination})</span>
+                      <span className="text-slate-400">({f.origin}→{f.destination})</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span>Dep: {f.revised_dep}</span>
@@ -650,7 +651,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500 font-mono flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-400 font-mono flex items-center justify-between">
             <span>Projection: WGS84 Mercator Equirectangular</span>
             <span>16 Stations</span>
           </div>

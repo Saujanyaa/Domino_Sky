@@ -3,17 +3,11 @@ import {
   Users,
   ShieldAlert,
   Clock,
-  Plane,
   AlertTriangle,
   CheckCircle2,
   XCircle,
-  HelpCircle,
-  UserCheck,
-  UserX,
 } from 'lucide-react';
 import type {
-  SimulatedConnection,
-  SimulatedCrew,
   SimulationResult,
   FlightNetworkData,
 } from '../types/index.ts';
@@ -26,7 +20,7 @@ interface PassengerCrewImpactProps {
 
 export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
   currentResult,
-  dataset,
+  dataset: _dataset,
 }) => {
   const [activeTab, setActiveTab] = useState<'connections' | 'crews'>('connections');
   const [filterMissedOnly, setFilterMissedOnly] = useState<boolean>(false);
@@ -111,7 +105,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
               {summary.total_connecting_pax - summary.affected_connection_pax} pax
             </span>
           </div>
-          <div className="mt-1 text-[10px] text-slate-500 font-mono">
+          <div className="mt-1 text-[10px] text-slate-400 font-mono">
             *Sum across severed connecting-passenger records
           </div>
         </div>
@@ -164,7 +158,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
           <div className="mt-1 text-xs text-slate-400">
             Civil Aviation DGCA standard duty window
           </div>
-          <div className="mt-1 text-[10px] text-slate-500 font-mono">
+          <div className="mt-1 text-[10px] text-slate-400 font-mono">
             Rosters exceeding limit require flight cancellation or relief crew
           </div>
         </div>
@@ -174,6 +168,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
       <div className="flex items-center justify-between border-b border-[#1e2f47] pb-2">
         <div className="flex space-x-2">
           <button
+            type="button"
             onClick={() => setActiveTab('connections')}
             className={`px-4 py-2 text-xs font-mono font-bold rounded-lg transition ${
               activeTab === 'connections'
@@ -184,6 +179,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
             Passenger Connections Bank ({connections.length})
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('crews')}
             className={`px-4 py-2 text-xs font-mono font-bold rounded-lg transition ${
               activeTab === 'crews'
@@ -286,7 +282,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
                               >
                                 {conn.available_connect_minutes}m avail
                               </span>
-                              <span className="text-slate-500 text-[10px]">
+                              <span className="text-slate-400 text-[10px]">
                                 Req: {conn.min_connect_minutes}m
                               </span>
                             </div>
@@ -398,7 +394,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
                             >
                               {crew.revised_duty_duration_mins}m ({formatDuration(crew.revised_duty_duration_mins)})
                             </span>
-                            <span className="text-slate-500 text-[10px]">
+                            <span className="text-slate-400 text-[10px]">
                               {dutyPercentage}%
                             </span>
                           </div>
@@ -435,7 +431,7 @@ export const PassengerCrewImpact: React.FC<PassengerCrewImpactProps> = ({
                             +{crew.violation_margin_mins}m over limit
                           </span>
                         ) : (
-                          <span className="text-slate-500 font-mono">
+                          <span className="text-slate-400 font-mono">
                             {crew.max_duty_mins - crew.revised_duty_duration_mins}m buffer
                           </span>
                         )}

@@ -6,11 +6,9 @@ import {
   AlertTriangle,
   Info,
   ShieldAlert,
-  Building2,
   Sparkles,
-  CheckCircle,
 } from 'lucide-react';
-import type { Airport, FlightNetworkData, ClosureParams } from '../types/index.ts';
+import type { FlightNetworkData, ClosureParams } from '../types/index.ts';
 import { timeToMinutes, isValidTimeString, isValidInterval } from '../utils/timeUtils.ts';
 
 interface DisruptionSimulatorProps {
@@ -281,10 +279,12 @@ export const DisruptionSimulator: React.FC<DisruptionSimulatorProps> = ({
                   activeClosure?.end_str === preset.end;
 
                 return (
-                  <div
+                  <button
                     key={preset.id}
+                    type="button"
+                    aria-pressed={isCurrent}
                     onClick={() => handleApplyPreset(preset)}
-                    className={`p-3.5 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
+                    className={`p-3.5 rounded-xl border text-left cursor-pointer transition flex flex-col justify-between focus:outline-none focus:ring-2 focus:ring-cyan-400 ${
                       isCurrent
                         ? 'bg-red-950/40 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
                         : 'bg-slate-900/60 border-slate-800 hover:border-cyan-500/50'
@@ -304,15 +304,15 @@ export const DisruptionSimulator: React.FC<DisruptionSimulatorProps> = ({
                       </p>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
+                    <div className="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono w-full">
                       <span className="text-amber-400 font-bold">
                         {preset.airport} • {preset.start} - {preset.end}
                       </span>
-                      <span className="text-cyan-400 font-semibold flex items-center gap-1 group-hover:translate-x-1 transition">
+                      <span className="text-cyan-400 font-semibold flex items-center gap-1">
                         Run Preset →
                       </span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

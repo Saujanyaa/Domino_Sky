@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Bot,
   Sparkles,
-  ShieldAlert,
   Key,
   Send,
   Loader2,
   CheckCircle2,
-  Info,
   Terminal,
   AlertTriangle,
 } from 'lucide-react';
@@ -124,10 +122,11 @@ export const AiDispatcher: React.FC<AiDispatcherProps> = ({
         {/* Gemini API Key Toggle */}
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => setShowKeyInput(!showKeyInput)}
-            className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-cyan-400"
           >
-            <Key className="w-3.5 h-3.5 text-amber-400" />
+            <Key className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
             {showKeyInput ? 'Hide Gemini Settings' : 'Configure Gemini API Key'}
           </button>
         </div>
@@ -137,14 +136,18 @@ export const AiDispatcher: React.FC<AiDispatcherProps> = ({
       {showKeyInput && (
         <div className="p-4 rounded-xl bg-slate-900 border border-cyan-800/40 space-y-3">
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-300">
-            <Key className="w-4 h-4 text-cyan-400" />
+            <Key className="w-4 h-4 text-cyan-400" aria-hidden="true" />
             OPTIONAL: Live Gemini Analysis Configuration
           </div>
           <p className="text-[11px] text-slate-400">
             The application operates 100% offline using the built-in deterministic operations dispatcher below. If you supply a Gemini API key, Gemini will generate an executive dispatch narrative using the exact calculated figures. Your key stays local to your browser session.
           </p>
           <div className="flex flex-wrap items-center gap-2">
+            <label htmlFor="gemini-api-key-input" className="sr-only">
+              Google Gemini API Key
+            </label>
             <input
+              id="gemini-api-key-input"
               type="password"
               placeholder="Enter Google Gemini API Key (AIza...)"
               value={apiKey}
@@ -152,18 +155,19 @@ export const AiDispatcher: React.FC<AiDispatcherProps> = ({
               className="flex-1 min-w-[260px] px-3 py-1.5 text-xs font-mono rounded-lg bg-black border border-slate-700 text-white focus:outline-none focus:border-cyan-500"
             />
             <button
+              type="button"
               onClick={handleRunGemini}
               disabled={isLoading || !apiKey.trim()}
-              className="px-4 py-1.5 text-xs font-mono font-bold rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black disabled:opacity-50 transition flex items-center gap-1.5"
+              className="px-4 py-1.5 text-xs font-mono font-bold rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black disabled:opacity-50 transition flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-cyan-400"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5" aria-hidden="true" />
                   Generate Gemini Assessment
                 </>
               )}
@@ -271,10 +275,11 @@ export const AiDispatcher: React.FC<AiDispatcherProps> = ({
         {/* Raw Verification Payload Inspector */}
         <div className="pt-2">
           <button
+            type="button"
             onClick={() => setShowPromptContext(!showPromptContext)}
-            className="text-[11px] text-slate-400 hover:text-cyan-300 font-mono flex items-center gap-1 transition"
+            className="text-[11px] text-slate-400 hover:text-cyan-300 font-mono flex items-center gap-1 transition focus:outline-none focus:ring-1 focus:ring-cyan-400"
           >
-            <Terminal className="w-3.5 h-3.5" />
+            <Terminal className="w-3.5 h-3.5" aria-hidden="true" />
             {showPromptContext ? 'Hide Calculated JSON Payload' : 'Inspect Exact Calculation Payload Passed to AI'}
           </button>
 

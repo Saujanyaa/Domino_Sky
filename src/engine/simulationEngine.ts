@@ -13,8 +13,11 @@ import type {
 import {
   timeToMinutes,
   minutesToTime,
-  isValidInterval,
 } from '../utils/timeUtils.ts';
+import {
+  DEFAULT_MIN_TURNAROUND_MINUTES,
+  MAX_CREW_DUTY_MINUTES,
+} from '../constants/operations.ts';
 
 export interface SimulationOptions {
   closure?: ClosureParams | null;
@@ -89,7 +92,7 @@ export function runSimulation(
 
   // 2. Simulate rotations per aircraft tail
   // We process all tails deterministically
-  const minTurnaroundDataset = dataset.meta.min_turnaround_minutes || 30;
+  const minTurnaroundDataset = dataset.meta.min_turnaround_minutes || DEFAULT_MIN_TURNAROUND_MINUTES;
 
   flightsByTail.forEach((tailFlights, tailId) => {
     let currentAircraftLocation = tailFlights.length > 0 ? tailFlights[0].origin : '';
@@ -289,7 +292,6 @@ export function runSimulation(
             // Must hold at origin so that arrival is at or after cEnd
             const requiredDepToArriveAfterClosure = cEnd - blockMins;
             const newDepMin = Math.max(readyDepMin, requiredDepToArriveAfterClosure);
-            const holdMins = newDepMin - readyDepMin;
             revisedDepMin = newDepMin;
             flightStatus = 'HELD_DESTINATION';
             delayReason = `Ground hold at origin: Destination ${closedAirport} closed until ${end_str}. Held at ${flight.origin} to arrive at reopening.`;
@@ -339,7 +341,7 @@ export function runSimulation(
         actual_turnaround_available_min:
           previousFlightArrivalMin !== null
             ? revisedDepMin - previousFlightArrivalMin
-            : null,
+            : actualTurnaround,
         cascade_source: cascadeSource,
       };
 
@@ -507,8 +509,9 @@ export function runSimulation(
     const lastOperatedFlight = operatedFlights[operatedFlights.length - 1];
     const revisedDutyEndMin = lastOperatedFlight.revised_arr_min;
     const revisedDutyDurationMins = revisedDutyEndMin - dutyStartMin;
-    const isViolation = revisedDutyDurationMins > crew.max_duty_mins;
-    const violationMarginMins = Math.max(0, revisedDutyDurationMins - crew.max_duty_mins);
+    const maxDutyLimit = crew.max_duty_mins || MAX_CREW_DUTY_MINUTES;
+    const isViolation = revisedDutyDurationMins > maxDutyLimit;
+    const violationMarginMins = Math.max(0, revisedDutyDurationMins - maxDutyLimit);
 
     if (isViolation) {
       cascadeSteps.push({

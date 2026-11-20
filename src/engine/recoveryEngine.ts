@@ -7,17 +7,18 @@ import type {
 } from '../types/index.ts';
 import { runSimulation } from './simulationEngine.ts';
 import { timeToMinutes } from '../utils/timeUtils.ts';
+import { SPARE_CREW_WARNING_MESSAGE } from '../constants/operations.ts';
 
 /**
  * Deterministic Recovery Engine for DOMINO SKY.
  * Generates and ranks candidate recovery actions against the disrupted baseline.
  *
- * Scoring priority (as strictly required by specs):
- * 1. Minimize passengers on cancelled flights (weight: 100,000)
- * 2. Minimize affected connection passengers (weight: 1,000)
- * 3. Minimize crew duty violations (weight: 10,000)
- * 4. Minimize total arrival delay minutes (weight: 1)
- * 5. Minimize number of cancellations (weight: 5,000)
+ * Priority ordering strictly mandated by Section 5 of specification:
+ * 1. Minimize passengers on cancelled flights
+ * 2. Minimize affected connection passengers
+ * 3. Minimize crew duty violations
+ * 4. Minimize total arrival delay minutes
+ * 5. Minimize number of cancellations
  */
 export function evaluateRecoveryOptions(
   dataset: FlightNetworkData,
@@ -41,9 +42,6 @@ export function evaluateRecoveryOptions(
   // Spares in dataset:
   // VT-DS17 at BLR (available from 05:00, 180 seats)
   // VT-DS18 at DEL (available from 05:00, 180 seats)
-  const spareMap = new Map(dataset.spare_aircraft.map((s) => [s.tail_id, s]));
-
-  // Find flights that have delay and match spare base
   const delayedFlights = disruptedResult.flights.filter(
     (f) => f.arr_delay_min > 0 && !f.is_cancelled
   );
@@ -68,8 +66,7 @@ export function evaluateRecoveryOptions(
           spare_tail_id: spare.tail_id,
           description: `Deploy spare aircraft ${spare.tail_id} from ${spare.base} on ${targetFlight.flight_id} (${targetFlight.origin} → ${targetFlight.destination}). Decouples downstream legs from inbound delays.`,
           requires_dispatcher_confirmation: true,
-          confirmation_warning:
-            'Aircraft feasibility checked — crew assignment requires dispatcher confirmation.',
+          confirmation_warning: SPARE_CREW_WARNING_MESSAGE,
           is_feasible: true,
         };
 
@@ -110,16 +107,21 @@ export function evaluateRecoveryOptions(
   // 2. Min affected connection pax
   // 3. Min crew duty violations
   // 4. Min total arrival delay mins
-  // 5. Min number of cancellations
+  // Multi-objective priority ranking as mandated by Section 5 of specification:
+  // Priority 1: Minimize passengers on cancelled flights
+  // Priority 2: Minimize affected connection passengers
+  // Priority 3: Minimize crew duty violations
+  // Priority 4: Minimize total arrival delay minutes
+  // Priority 5: Minimize number of cancellations
   const scoredOptions: ScoredRecoveryOption[] = options.map((opt) => {
     const s = opt.result.summary;
-    // Weighted objective function strictly reflecting the priority tiers:
+    // Composite scalar score for visualization:
     const score =
-      s.pax_on_cancelled_flights * 1000000 +
-      s.affected_connection_pax * 10000 +
-      s.crew_duty_violations_count * 50000 +
-      s.cancelled_flights_count * 20000 +
-      s.total_arr_delay_mins * 1;
+      s.pax_on_cancelled_flights * 100000000 +
+      s.affected_connection_pax * 1000000 +
+      s.crew_duty_violations_count * 10000 +
+      s.total_arr_delay_mins * 1 +
+      s.cancelled_flights_count * 0.001;
 
     // Build reasoning
     const pros: string[] = [];
@@ -163,8 +165,24 @@ export function evaluateRecoveryOptions(
     };
   });
 
-  // Sort by score ascending (lowest penalty = best recovery)
-  scoredOptions.sort((a, b) => a.score - b.score);
+  // Sort by priority tiers ascending (lowest penalty = best recovery)
+  scoredOptions.sort((a, b) => {
+    const sA = a.result.summary;
+    const sB = b.result.summary;
+    if (sA.pax_on_cancelled_flights !== sB.pax_on_cancelled_flights) {
+      return sA.pax_on_cancelled_flights - sB.pax_on_cancelled_flights;
+    }
+    if (sA.affected_connection_pax !== sB.affected_connection_pax) {
+      return sA.affected_connection_pax - sB.affected_connection_pax;
+    }
+    if (sA.crew_duty_violations_count !== sB.crew_duty_violations_count) {
+      return sA.crew_duty_violations_count - sB.crew_duty_violations_count;
+    }
+    if (sA.total_arr_delay_mins !== sB.total_arr_delay_mins) {
+      return sA.total_arr_delay_mins - sB.total_arr_delay_mins;
+    }
+    return sA.cancelled_flights_count - sB.cancelled_flights_count;
+  });
 
   // Assign ranks
   scoredOptions.forEach((opt, idx) => {

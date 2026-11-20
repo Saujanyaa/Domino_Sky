@@ -4,10 +4,6 @@ import {
   Sparkles,
   AlertTriangle,
   CheckCircle2,
-  Clock,
-  Users,
-  ShieldAlert,
-  Plane,
   ArrowRight,
   RotateCcw,
   Info,
@@ -20,7 +16,6 @@ import type {
   ScoredRecoveryOption,
 } from '../types/index.ts';
 import { evaluateRecoveryOptions } from '../engine/recoveryEngine.ts';
-import { formatDelay } from '../utils/timeUtils.ts';
 
 interface RecoveryCentreProps {
   dataset: FlightNetworkData;
@@ -90,10 +85,11 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
               Active: {activeRecovery?.label}
             </div>
             <button
+              type="button"
               onClick={onRevertRecovery}
-              className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-cyan-400"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
+              <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
               Revert to Disrupted
             </button>
           </div>
@@ -103,26 +99,26 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
       {/* Priority Hierarchy Reference */}
       <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs font-mono">
         <div className="flex items-center gap-2 text-cyan-400 font-bold uppercase tracking-wider mb-2">
-          <Info className="w-4 h-4" />
+          <Info className="w-4 h-4" aria-hidden="true" />
           Recovery Engine Priority Ordering (Spec Section 5):
         </div>
         <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-300">
           <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-bold text-white">
             1. Min Cancelled Pax
           </span>
-          <span className="text-slate-500">→</span>
+          <span className="text-slate-400">→</span>
           <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-bold text-white">
             2. Min Missed Conn Pax
           </span>
-          <span className="text-slate-500">→</span>
+          <span className="text-slate-400">→</span>
           <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-bold text-white">
             3. Min Crew Violations
           </span>
-          <span className="text-slate-500">→</span>
+          <span className="text-slate-400">→</span>
           <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-bold text-white">
             4. Min Delay Mins
           </span>
-          <span className="text-slate-500">→</span>
+          <span className="text-slate-400">→</span>
           <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-bold text-white">
             5. Min Cancellations
           </span>
@@ -138,7 +134,6 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
 
           const isSpare = opt.action.type === 'SPARE_SUBSTITUTION';
           const isCancel = opt.action.type === 'CANCEL_FLIGHT';
-          const isNone = opt.action.type === 'NONE';
 
           return (
             <div
@@ -201,14 +196,16 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                     </div>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => onApplyRecovery(opt.action)}
-                      className={`px-4 py-2 rounded-lg font-mono text-xs font-bold transition flex items-center gap-1.5 ${
+                      aria-label={`Apply recovery option: ${opt.action.label}`}
+                      className={`px-4 py-2 rounded-lg font-mono text-xs font-bold transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-400 ${
                         opt.rank === 1
                           ? 'bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-black shadow-[0_0_15px_rgba(0,229,255,0.3)]'
                           : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600'
                       }`}
                     >
-                      Apply Recovery <ArrowRight className="w-3.5 h-3.5" />
+                      Apply Recovery <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -222,7 +219,7 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                   <div className="text-sm font-bold text-amber-400 mt-0.5">
                     +{s.total_arr_delay_mins}m
                   </div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     {s.total_arr_delay_mins < baseDisrupt.total_arr_delay_mins ? (
                       <span className="text-emerald-400 font-bold">
                         -{baseDisrupt.total_arr_delay_mins - s.total_arr_delay_mins}m saved
@@ -239,7 +236,7 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                   <div className="text-sm font-bold text-white mt-0.5">
                     {s.delayed_flights_count} flts
                   </div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     Max: {s.max_arr_delay_mins}m
                   </div>
                 </div>
@@ -254,7 +251,7 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                   >
                     {s.pax_on_cancelled_flights} pax
                   </div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     {s.cancelled_flights_count} cancellations
                   </div>
                 </div>
@@ -269,7 +266,7 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                   >
                     {s.missed_connections_count} banks
                   </div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     {s.total_connections_count - s.missed_connections_count} protected
                   </div>
                 </div>
@@ -284,7 +281,7 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                   >
                     {s.affected_connection_pax} pax
                   </div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     {s.affected_connection_pax < baseDisrupt.affected_connection_pax ? (
                       <span className="text-emerald-400 font-bold">
                         -{baseDisrupt.affected_connection_pax - s.affected_connection_pax} protected
@@ -305,7 +302,7 @@ export const RecoveryCentre: React.FC<RecoveryCentreProps> = ({
                   >
                     {s.crew_duty_violations_count} rosters
                   </div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="text-[10px] text-slate-400">
                     Limit: 600m
                   </div>
                 </div>

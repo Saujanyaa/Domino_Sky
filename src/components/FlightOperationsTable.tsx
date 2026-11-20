@@ -1,19 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import {
-  ListFilter,
   Search,
   Plane,
-  Clock,
   ArrowUpDown,
-  AlertTriangle,
-  CheckCircle2,
   X,
   Info,
   ChevronRight,
-  ShieldAlert,
 } from 'lucide-react';
 import type { SimulatedFlight, FlightNetworkData } from '../types/index.ts';
-import { formatDelay } from '../utils/timeUtils.ts';
 
 interface FlightOperationsTableProps {
   flights: SimulatedFlight[];
@@ -34,7 +28,7 @@ type SortField =
 
 export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
   flights,
-  dataset,
+  dataset: _dataset,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -299,11 +293,20 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                   <tr
                     key={flight.flight_id}
                     onClick={() => setSelectedFlight(flight)}
-                    className="hover:bg-slate-800/40 cursor-pointer transition"
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Inspect details for flight ${flight.flight_id} from ${flight.origin} to ${flight.destination}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedFlight(flight);
+                      }
+                    }}
+                    className="hover:bg-slate-800/40 cursor-pointer transition focus:outline-none focus:bg-slate-800/60"
                   >
                     <td className="py-2.5 px-3.5 font-bold text-white flex items-center gap-2">
                       <span className="text-cyan-400">{flight.flight_id}</span>
-                      <span className="text-[10px] text-slate-500 font-normal">
+                      <span className="text-[10px] text-slate-400 font-normal">
                         L{flight.leg_order}
                       </span>
                     </td>
@@ -367,8 +370,18 @@ export const FlightOperationsTable: React.FC<FlightOperationsTableProps> = ({
                         </span>
                       )}
                     </td>
-                    <td className="py-2.5 px-3 text-right text-slate-500">
-                      <ChevronRight className="w-4 h-4 ml-auto" />
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedFlight(flight);
+                        }}
+                        aria-label={`Inspect ${flight.flight_id}`}
+                        className="p-1 rounded text-slate-400 hover:text-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                      >
+                        <ChevronRight className="w-4 h-4 ml-auto" aria-hidden="true" />
+                      </button>
                     </td>
                   </tr>
                 );
